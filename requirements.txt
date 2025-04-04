@@ -1,0 +1,10 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+python-dotenv==1.0.0
+httpx==0.25.1
+pydantic==2.4.2
+email-validator==2.1.0.post1
+passlib[bcrypt]==1.7.4
+pyjwt==2.8.0
+python-jose[cryptography]==3.3.0
+python-multipart==0.0.6 

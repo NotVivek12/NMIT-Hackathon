@@ -1,106 +1,128 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 import os
-import uvicorn
+import time
+import json
 from dotenv import load_dotenv
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
+from typing import Optional
 
-# Import routers with error handling
-# Initialize empty router variables
-youtube = None
-weather = None
-ev_stations = None
-image_gen = None
-crypto = None
-auth = None
-
-# Try to import routers, but continue if some fail
+# Try to import routers with fallbacks
 try:
     from app.routers import youtube
-except ImportError as e:
-    print(f"Warning: YouTube router not loaded: {e}")
+except ImportError:
+    youtube = None
 
 try:
     from app.routers import weather
-except ImportError as e:
-    print(f"Warning: Weather router not loaded: {e}")
+except ImportError:
+    weather = None
 
 try:
     from app.routers import ev_stations
-except ImportError as e:
-    print(f"Warning: EV Stations router not loaded: {e}")
+except ImportError:
+    ev_stations = None
 
 try:
     from app.routers import image_gen
-except ImportError as e:
-    print(f"Warning: Image Generation router not loaded: {e}")
+except ImportError:
+    image_gen = None
 
 try:
     from app.routers import crypto
-except ImportError as e:
-    print(f"Warning: Crypto router not loaded: {e}")
-
+except ImportError:
+    crypto = None
+    
 try:
     from app.routers import auth
-except ImportError as e:
-    print(f"Warning: Authentication router not loaded: {e}")
+except ImportError:
+    auth = None
 
-# Load environment variables
+# Load environment variables from .env file
 load_dotenv()
 
-# Initialize FastAPI app
-app = FastAPI(
-    title="OmniBot API",
-    description="Backend API for OmniBot - The AI Swiss Army Knife",
-    version="1.0.0"
-)
+# Initialize the FastAPI app
+app = FastAPI(title="OmniBot API", description="An API for OmniBot, a versatile chatbot that integrates multiple services.", version="1.0.0")
 
-# Configure CORS
+# Set up CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For production, specify your frontend domain
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers if available
-if youtube and hasattr(youtube, 'router'):
+# Define the base directory to serve static files from
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+STATIC_DIR = BASE_DIR
+
+# Mount static files
+app.mount("/css", StaticFiles(directory=os.path.join(STATIC_DIR, "css")), name="css")
+app.mount("/js", StaticFiles(directory=os.path.join(STATIC_DIR, "js")), name="js")
+app.mount("/public", StaticFiles(directory=os.path.join(STATIC_DIR, "public")), name="public")
+
+# Import and include routers
+if youtube:
     app.include_router(youtube.router, prefix="/api/youtube", tags=["YouTube"])
-if weather and hasattr(weather, 'router'):
+
+if weather:
     app.include_router(weather.router, prefix="/api/weather", tags=["Weather"])
-if ev_stations and hasattr(ev_stations, 'router'):
-    app.include_router(ev_stations.router, prefix="/api/ev-stations", tags=["EV Stations"])
-if image_gen and hasattr(image_gen, 'router'):
-    app.include_router(image_gen.router, prefix="/api/images", tags=["Image Generation"])
-if crypto and hasattr(crypto, 'router'):
+
+if ev_stations:
+    app.include_router(ev_stations.router, prefix="/api/ev", tags=["EV Stations"])
+
+if image_gen:
+    app.include_router(image_gen.router, prefix="/api/image", tags=["Image Generation"])
+
+if crypto:
     app.include_router(crypto.router, prefix="/api/crypto", tags=["Cryptocurrency"])
-if auth and hasattr(auth, 'router'):
+    
+if auth:
     app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 
-# Serve static files (frontend)
-static_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-app.mount("/css", StaticFiles(directory=os.path.join(static_dir, "css")), name="css")
-app.mount("/js", StaticFiles(directory=os.path.join(static_dir, "js")), name="js")
-app.mount("/public", StaticFiles(directory=os.path.join(static_dir, "public")), name="public")
-
-@app.get("/", tags=["Root"])
-async def serve_frontend():
-    """Serve the frontend HTML."""
-    return FileResponse(os.path.join(static_dir, "index.html"))
-
-@app.get("/login", tags=["Authentication"])
-async def serve_login():
-    """Serve the login page."""
-    return FileResponse(os.path.join(static_dir, "login.html"))
-
-@app.get("/health", tags=["Health"])
+# Add health check endpoint
+@app.get("/api/health", tags=["Health"])
 async def health_check():
-    """Health check endpoint."""
-    return {"status": "healthy", "message": "OmniBot API is running!"}
+    return {"status": "ok", "timestamp": time.time()}
 
-if __name__ == "__main__":
-    # Run the app with uvicorn when this file is executed directly
-    port = int(os.getenv("PORT", 8000))
-    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True) 
+# Serve index.html at the root
+@app.get("/", tags=["Frontend"], response_class=HTMLResponse)
+async def serve_homepage():
+    try:
+        html_file = os.path.join(STATIC_DIR, "index.html")
+        with open(html_file, "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to serve homepage: {str(e)}")
+
+# Serve login.html
+@app.get("/login", tags=["Authentication"], response_class=HTMLResponse)
+async def serve_login_page():
+    try:
+        html_file = os.path.join(STATIC_DIR, "login.html")
+        with open(html_file, "r") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to serve login page: {str(e)}")
+
+# Vercel serverless handler
+@app.get("/{path:path}", include_in_schema=False)
+async def catch_all(path: str, request: Request):
+    # Try to serve static files
+    file_path = os.path.join(STATIC_DIR, path)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path)
+        
+    # Default to index.html for client-side routing
+    html_file = os.path.join(STATIC_DIR, "index.html")
+    with open(html_file, "r") as f:
+        content = f.read()
+    return HTMLResponse(content=content)
+
+# Handler for Vercel serverless functions
+handler = app 

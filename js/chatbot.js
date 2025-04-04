@@ -237,12 +237,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                     
                 case 'ev':
-                    endpoint = `${API_BASE_URL}/ev-stations/nearby`;
+                    endpoint = `${API_BASE_URL}/ev/nearby`;
                     requestBody = { location: params.location };
                     break;
                     
                 case 'image':
-                    endpoint = `${API_BASE_URL}/images/generate`;
+                    endpoint = `${API_BASE_URL}/image/generate`;
                     requestBody = { prompt: params.prompt };
                     break;
                     
