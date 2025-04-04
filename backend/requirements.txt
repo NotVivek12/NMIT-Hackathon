@@ -1,0 +1,21 @@
+fastapi==0.100.0
+uvicorn==0.22.0
+python-dotenv==1.0.0
+requests==2.31.0
+youtube-transcript-api==0.6.1
+openai==0.27.8
+# pydantic==2.0.2
+httpx==0.24.1
+python-multipart==0.0.6
+jinja2==3.1.2
+# groq==0.3.0
+# # serper-dev==0.1.4  # Removed due to installation issues
+opencage==2.3.0
+beautifulsoup4==4.12.2
+# alpaca-trade-api==3.0.0
+
+# Authentication packages
+passlib[bcrypt]==1.7.4
+pyjwt==2.8.0
+python-jose[cryptography]==3.3.0
+email-validator==2.1.0.post1 

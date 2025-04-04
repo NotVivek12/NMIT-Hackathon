@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniBot - The AI Swiss Army Knife</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>OmniBot</h1>
+                <p>The AI Swiss Army Knife</p>
+            </div>
+            <div class="mobile-menu-button">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#apis">APIs</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#chatbot">Try OmniBot</a></li>
+                <li><a href="#extensions">Extensions</a></li>
+            </ul>
+        </nav>
+        <div class="hero">
+            <div class="hero-content">
+                <h1>OmniBot</h1>
+                <h2>The AI Swiss Army Knife</h2>
+                <p>A versatile AI-powered chatbot (Discord/Telegram) that integrates multiple APIs to handle diverse user requests—from summarizing YouTube videos to finding EV charging stations—all through natural language interaction.</p>
+                <div class="cta-buttons">
+                    <a href="#chatbot" class="cta-primary">Try It Now</a>
+                    <a href="#features" class="cta-secondary">Explore Features</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="bot-image">
+                    <i class="fas fa-robot"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="features">
+        <h2>Key Features</h2>
+        <div class="feature-cards">
+            <div class="feature-card">
+                <i class="fab fa-youtube"></i>
+                <h3>YouTube Summary</h3>
+                <p><strong>Command:</strong> /summarize https://youtube.com/...</p>
+                <p><strong>Flow:</strong> Fetch transcript → Groq generates a concise summary.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-search"></i>
+                <h3>Real-Time Answers</h3>
+                <p><strong>Command:</strong> What's the latest news about AI?</p>
+                <p><strong>Flow:</strong> SerpAPI scrapes results → Groq distills key points.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-image"></i>
+                <h3>Image Generation</h3>
+                <p><strong>Command:</strong> Draw a futuristic city</p>
+                <p><strong>Flow:</strong> DALL·E Mini creates an image → Bot sends it to the user.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-cloud-sun"></i>
+                <h3>Weather & EV Tools</h3>
+                <p><strong>Command:</strong> Weather in Tokyo? or Find EV stations near me</p>
+                <p><strong>Flow:</strong> OpenCage geocodes location → Weather API/Open Charge Map returns data.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Stock/Crypto Prices</h3>
+                <p><strong>Command:</strong> Price of Bitcoin?</p>
+                <p><strong>Flow:</strong> Alpha Vantage fetches real-time data.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="apis" class="apis">
+        <h2>APIs Used</h2>
+        <div class="api-grid">
+            <div class="api-card">
+                <h3>Groq API</h3>
+                <p>Core AI - Processes user queries, generates responses, and summarizes content.</p>
+            </div>
+            <div class="api-card">
+                <h3>Discord/Telegram Bot API</h3>
+                <p>Interface - User interaction platform.</p>
+            </div>
+            <div class="api-card">
+                <h3>YouTube Transcript API</h3>
+                <p>Fetches video transcripts for summarization.</p>
+            </div>
+            <div class="api-card">
+                <h3>SerpAPI/DuckDuckGo</h3>
+                <p>Real-time web search for up-to-date answers.</p>
+            </div>
+            <div class="api-card">
+                <h3>DALL·E Mini</h3>
+                <p>Generates images from text prompts.</p>
+            </div>
+            <div class="api-card">
+                <h3>Weather API + OpenCage</h3>
+                <p>Provides geocoding and weather forecasts.</p>
+            </div>
+            <div class="api-card">
+                <h3>Open Charge Map</h3>
+                <p>Locates nearby EV charging stations.</p>
+            </div>
+            <div class="api-card">
+                <h3>Composio</h3>
+                <p>Orchestrates workflows between APIs.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="demo">
+        <h2>Demo Scenarios</h2>
+        <div class="demo-scenarios">
+            <div class="scenario">
+                <div class="scenario-message user">
+                    <p>"Summarize this video about climate change: https://youtube.com/xyz"</p>
+                </div>
+                <div class="scenario-message bot">
+                    <p>Bot fetches transcript → Groq creates a 3-point summary.</p>
+                </div>
+            </div>
+            <div class="scenario">
+                <div class="scenario-message user">
+                    <p>"Show me EV stations near Central Park."</p>
+                </div>
+                <div class="scenario-message bot">
+                    <p>OpenCage geocodes "Central Park" → Open Charge Map returns stations → Bot shares a map link.</p>
+                </div>
+            </div>
+            <div class="scenario">
+                <div class="scenario-message user">
+                    <p>"Draw a robot gardening."</p>
+                </div>
+                <div class="scenario-message bot">
+                    <p>DALL·E generates image → Bot replies with the artwork.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add chatbot interface section -->
+    <section id="chatbot" class="chatbot-section">
+        <h2>Try OmniBot Now</h2>
+        <div class="chatbot-container">
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="chat-message bot">
+                    <div class="chat-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="chat-bubble">
+                        <p>Hello! I'm OmniBot, your AI assistant. How can I help you today?</p>
+                        <p>You can try commands like:</p>
+                        <ul>
+                            <li>Summarize this YouTube video: https://youtube.com/watch?v=dQw4w9WgXcQ</li>
+                            <li>What's the weather in Tokyo?</li>
+                            <li>Find EV charging stations near Central Park</li>
+                            <li>Draw a cat playing piano</li>
+                            <li>What's the price of Bitcoin?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="user-input" placeholder="Type your message here..." aria-label="Type your message">
+                <button id="send-btn" aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="extensions" class="extensions">
+        <h2>Potential Extensions</h2>
+        <div class="extension-items">
+            <div class="extension">
+                <i class="fas fa-sms"></i>
+                <h3>SMS Alerts</h3>
+                <p>Add Twilio for SMS alerts (e.g., "Notify me if Bitcoin hits $70K").</p>
+            </div>
+            <div class="extension">
+                <i class="fas fa-film"></i>
+                <h3>Movie Recommendations</h3>
+                <p>Integrate TMDB for movie recommendations.</p>
+            </div>
+            <div class="extension">
+                <i class="fas fa-plus-circle"></i>
+                <h3>Custom API Integration</h3>
+                <p>Easily add new APIs through Composio for workflow automation.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="differentiators">
+        <h2>Why OmniBot?</h2>
+        <div class="differentiator-items">
+            <div class="differentiator">
+                <h3>Unified Interface</h3>
+                <p>One bot for diverse tasks, eliminating app-switching.</p>
+            </div>
+            <div class="differentiator">
+                <h3>Speed</h3>
+                <p>Groq's fast LLM ensures quick responses.</p>
+            </div>
+            <div class="differentiator">
+                <h3>Scalability</h3>
+                <p>Composio allows easy addition of new APIs (e.g., Booking.com for travel plans).</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="tech-stack">
+        <h2>Tech Stack</h2>
+        <div class="tech-items">
+            <div class="tech-item">Python</div>
+            <div class="tech-item">FastAPI</div>
+            <div class="tech-item">Composio</div>
+            <div class="tech-item">Discord.py</div>
+            <div class="tech-item">python-telegram-bot</div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>OmniBot</h3>
+                <p>The AI Swiss Army Knife</p>
+            </div>
+            <div class="footer-links">
+                <a href="#features">Features</a>
+                <a href="#apis">APIs</a>
+                <a href="#demo">Demo</a>
+                <a href="#extensions">Extensions</a>
+            </div>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-discord"></i></a>
+                <a href="#"><i class="fab fa-telegram"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 OmniBot - NMIT Hackathon Project</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/chatbot.js"></script>
+</body>
+</html> 
