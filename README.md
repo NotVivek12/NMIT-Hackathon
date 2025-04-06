@@ -71,4 +71,4 @@ python run.py
 
 ## Contributors
 
-- Team NMIT Hackathon
+- Team ERROR 404 - CIT
