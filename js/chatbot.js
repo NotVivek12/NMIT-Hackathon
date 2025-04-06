@@ -255,15 +255,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error('Unknown intent');
             }
             
+            console.log(`Calling API endpoint: ${endpoint}`, requestBody);
+            
+            // Set a timeout for the fetch operation
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
+            
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(requestBody)
+                body: JSON.stringify(requestBody),
+                signal: controller.signal
             });
             
+            clearTimeout(timeoutId);
+            
             if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`API error ${response.status}: ${errorText}`);
+                
+                // In production, fall back to the demo response
+                if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                    console.log('Using fallback demo response');
+                    return { _fallback: true, ...getFallbackResponse(intent) };
+                }
+                
                 throw new Error(`API error: ${response.status}`);
             }
             
@@ -271,6 +289,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             console.error('API call error:', error);
+            
+            // In production, fall back to the demo response
+            if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                console.log('Using fallback demo response due to error');
+                return { _fallback: true, ...getFallbackResponse(intent) };
+            }
+            
             return null;
         }
     }
@@ -282,6 +307,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 response: "I'm having trouble with that request right now. Please try again later.",
                 details: ["There was an error processing your request."]
             };
+        }
+        
+        // If using fallback response, just return it directly
+        if (apiResponse._fallback) {
+            delete apiResponse._fallback;
+            return apiResponse;
         }
         
         switch (intent) {

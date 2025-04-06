@@ -1,8 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.models.schemas import WeatherRequest, WeatherResponse, WeatherData, ErrorResponse
 from app.services.weather_service import WeatherService
+import logging
+import traceback
 
 router = APIRouter()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 async def get_weather_service():
     """Dependency for getting the Weather service."""
@@ -26,9 +32,11 @@ async def get_current_weather(
     """
     try:
         # Geocode the location
+        logger.info(f"Processing weather request for location: {request.location}")
         coords, formatted_location = await weather_service.geocode_location(request.location)
         
         # Get weather data
+        logger.info(f"Geocoded to coordinates: {coords}")
         weather_data = await weather_service.get_weather(coords["lat"], coords["lng"])
         
         # Update location from formatted geocoded result
@@ -41,8 +49,12 @@ async def get_current_weather(
         )
         
     except Exception as e:
-        # Handle errors
+        # Enhanced error logging
+        error_detail = f"Error processing weather request: {str(e)}\n{traceback.format_exc()}"
+        logger.error(error_detail)
+        
+        # Handle errors with more details
         raise HTTPException(
             status_code=500,
-            detail=str(e)
+            detail=error_detail
         ) 
